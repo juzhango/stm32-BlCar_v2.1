@@ -14,10 +14,10 @@ void Ultra_TIM_Config()
 	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
 	
-	RCC_APB2PeriphClockCmd(ULTRA_TIM_CLK, ENABLE);
-
-	TIM_TimeBaseStructure.TIM_Period = ULTRA_TIM_ARR;
-	TIM_TimeBaseStructure.TIM_Prescaler =ULTRA_TIM_PSC;
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1,ENABLE);
+	
+	TIM_TimeBaseStructure.TIM_Period = 500;
+	TIM_TimeBaseStructure.TIM_Prescaler =7199;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 1; 
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit(ULTRA_TIMx, &TIM_TimeBaseStructure); 
@@ -84,10 +84,10 @@ void Ultra_NVIC_Config()
 void Ultra_Init()
 {
 	Init_Ultra_Pram(&ultra);
-	Ultra_TIM_Config();
 	Ultra_GPIO_Config();
 	Ultra_EXTI_Config();
-	Ultra_NVIC_Config();	
+	Ultra_NVIC_Config();
+//	Ultra_TIM_Config();
 }
 
 
@@ -121,7 +121,7 @@ void EXTI1_IRQHandler(void)
 	}
 }
 
-void TIM1_IRQHandler(void)   //TIM4ÖÐ¶Ï
+void TIM1_IRQHandler(void)   //TIMÖÐ¶Ï
 {
 	if(TIM_GetITStatus(ULTRA_TIMx, TIM_IT_Update) != RESET) 
 	{

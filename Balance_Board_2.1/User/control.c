@@ -22,7 +22,6 @@ void BlCar_Control(void)
 	if(str_time_cnt.Time_5HZ >= 40)				//=== 200ms
 	{
 		str_time_cnt.Time_5HZ = 0;
-		oled_show_init();						//=== oled显示框架
 		oled_show_reflesh();
 	}	
 	
@@ -30,6 +29,7 @@ void BlCar_Control(void)
 	{
 		str_time_cnt.Time_1HZ = 0;
 		f32Power = Get_Bettrty(10);				//=== 获取电量
+		oled_show_init();	
 	}
 }
 
