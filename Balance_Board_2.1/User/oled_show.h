@@ -3,7 +3,8 @@
 #include "board_drive.h"
 
 
-void oled_show(void);
+void oled_show_reflesh(void);
+void oled_show_init(void);
 #endif
 
 

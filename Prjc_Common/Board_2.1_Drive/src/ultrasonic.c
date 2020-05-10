@@ -121,11 +121,11 @@ void EXTI1_IRQHandler(void)
 	}
 }
 
-void TIM1_UP_IRQHandler(void)   //TIM1ÖÐ¶Ï
+void TIM1_IRQHandler(void)   //TIM4ÖÐ¶Ï
 {
-	if(TIM_GetITStatus(TIM1, TIM_IT_Update) != RESET) 
+	if(TIM_GetITStatus(ULTRA_TIMx, TIM_IT_Update) != RESET) 
 	{
-		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);  
+		TIM_ClearITPendingBit(ULTRA_TIMx, TIM_IT_Update);  
 	}
 }
 

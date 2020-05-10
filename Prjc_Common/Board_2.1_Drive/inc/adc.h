@@ -25,6 +25,8 @@
 #define ADCx				ADC1
 #define ADC_CH				ADC_Channel_4
 
+
+
 /****************************************************
 *名  称：Battery_Init
 *说  明：电压采集初始化

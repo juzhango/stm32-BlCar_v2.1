@@ -92,6 +92,7 @@ void OLED_Init(void)
 	WriteCmd(0x8d); //--set DC-DC enable
 	WriteCmd(0x14); //
 	WriteCmd(0xaf); //--turn on oled panel
+	OLED_CLS();
 }
 
  /**

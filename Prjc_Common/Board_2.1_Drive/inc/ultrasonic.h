@@ -28,7 +28,7 @@ extern ST_ULTRA_REGS ultra;
 #define ULTRA_TIMx			TIM1
 #define ULTRA_TIM_CLK 		RCC_APB2Periph_TIM1
 #define ULTRA_TIM_ARR		5000
-#define ULTRA_TIM_PSC		720		//=== 装载一次 t=arr*(psc/APB2)=50ms
+#define ULTRA_TIM_PSC		720			//=== 装载一次 t=arr*(psc/APB2)=50ms
 
 
 /****************************************************

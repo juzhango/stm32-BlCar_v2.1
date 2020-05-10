@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-
+#include "systick.h"
 #include "motor.h"
 #include "pwm.h"
 #include "encoder.h"
@@ -30,10 +30,10 @@
 #include "inv_mpu_dmp_motion_driver.h"
 #include "dmpKey.h"
 #include "dmpmap.h"
-
-
 #include "dmp_filter.h"
 
+
+#include "control.h"
 
 
 

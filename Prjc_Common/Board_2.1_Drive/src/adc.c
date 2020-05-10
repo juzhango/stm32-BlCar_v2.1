@@ -1,6 +1,8 @@
 #include "board_drive.h"
 
 
+
+
 void GPIO_Config()
 {
 	GPIO_InitTypeDef GPIO_InitStruct;
@@ -42,6 +44,12 @@ void Battery_Init()
 	ADC_Config();
 }
 
+
+/**
+*@brief	
+*@param  
+*@retval 		
+*/
 uint16_t Get_Adc(uint8_t ch)
 {
 	ADC_RegularChannelConfig(ADC1, ch, 1, ADC_SampleTime_239Cycles5 );
@@ -49,7 +57,11 @@ uint16_t Get_Adc(uint8_t ch)
 	while(ADC_GetSoftwareStartConvStatus(ADC1));	//=== 等待软件转换完成
 	return ADC_GetDualModeConversionValue();		//=== 返回最近一次的转换结果。
 }
-
+/**
+*@brief	
+*@param  
+*@retval 		
+*/
 uint16_t Get_Adc_Average(uint8_t ch,uint8_t times)
 {
 	u32 temp_val=0;
@@ -61,7 +73,11 @@ uint16_t Get_Adc_Average(uint8_t ch,uint8_t times)
 	}
 	return temp_val/times;
 }
-
+/**
+*@brief	
+*@param  
+*@retval 		
+*/
 float Get_Bettrty(uint8_t times)
 {
 	float b = 0.00626289;					//=== 电压与adc比例关系
