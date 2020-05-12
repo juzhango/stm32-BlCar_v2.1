@@ -48,10 +48,10 @@ void Ultra_Init(void);
 void Ultra_Trigger(void);
 
 /****************************************************
-*名  称：
-*说  明：
-*输  入：
-*输  出：
+*名  称：void Get_Distance( ST_ULTRA_REGS *ultra)
+*说  明：获取超声波测距
+*输  入：超声波结构体
+*输  出：无
 ****************************************************/
 void Get_Distance( ST_ULTRA_REGS *ultra);
 

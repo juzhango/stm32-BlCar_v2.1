@@ -29,7 +29,6 @@ void BlCar_Control(void)
 	{
 		str_time_cnt.Time_1HZ = 0;
 		f32Power = Get_Bettrty(10);				//=== 获取电量
-		oled_show_init();	
 	}
 }
 

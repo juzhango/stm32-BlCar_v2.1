@@ -11,31 +11,26 @@ void Init_Ultra_Pram(ST_ULTRA_REGS *ultra)
 }
 void Ultra_TIM_Config()
 {   
-	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1,ENABLE);	
 	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1,ENABLE);
-	
-	TIM_TimeBaseStructure.TIM_Period = 500;
-	TIM_TimeBaseStructure.TIM_Prescaler =7199;
-	TIM_TimeBaseStructure.TIM_ClockDivision = 1; 
+	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseInit(ULTRA_TIMx, &TIM_TimeBaseStructure); 
- 
-	TIM_ITConfig( 
-		ULTRA_TIMx,
-		TIM_IT_Update|  
-		TIM_IT_Trigger, 
-		ENABLE  
-		);
+	TIM_TimeBaseStructure.TIM_Period = 5000;
+	TIM_TimeBaseStructure.TIM_Prescaler = 719;				//=== 一次是 0.01ms   720/Sysclk = 0.00001s
+	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;//重复计数设置 	 
+	TIM_TimeBaseInit(TIM1,&TIM_TimeBaseStructure);
 	
-	TIM_ClearITPendingBit(ULTRA_TIMx, TIM_IT_Update);
+	TIM_ITConfig(TIM1, TIM_IT_Update | TIM_IT_Trigger,ENABLE);
 	
-	NVIC_InitStructure.NVIC_IRQChannel = TIM1_UP_IRQn;  
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;  
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; 
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);  							 
+	TIM_ClearFlag(TIM1, TIM_FLAG_Update);//清中断标志位  
+			
+	NVIC_InitStructure.NVIC_IRQChannel = TIM1_UP_IRQn;  //TIM1中断  
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;  //先占优先级3级
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;  //从优先级0级
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ通道被使能
+	NVIC_Init(&NVIC_InitStructure);  //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器	
 }
 
 void Ultra_GPIO_Config()
@@ -84,10 +79,11 @@ void Ultra_NVIC_Config()
 void Ultra_Init()
 {
 	Init_Ultra_Pram(&ultra);
+	Ultra_TIM_Config();
 	Ultra_GPIO_Config();
 	Ultra_EXTI_Config();
 	Ultra_NVIC_Config();
-//	Ultra_TIM_Config();
+	
 }
 
 
@@ -121,7 +117,7 @@ void EXTI1_IRQHandler(void)
 	}
 }
 
-void TIM1_IRQHandler(void)   //TIM中断
+void TIM1_UP_IRQHandler(void)   //TIM中断
 {
 	if(TIM_GetITStatus(ULTRA_TIMx, TIM_IT_Update) != RESET) 
 	{
@@ -132,12 +128,13 @@ void TIM1_IRQHandler(void)   //TIM中断
 void Ultra_Trigger(void)
 {
 	GPIO_SetBits(TRIG_GPIO_PORT,TRIG_PIN); 		  
-	delay_us(12);		                   
+	delay_us(2);		                   
 	GPIO_ResetBits(TRIG_GPIO_PORT,TRIG_PIN);	  
 }
 
 void Get_Distance( ST_ULTRA_REGS *ultra)	//=== 超声波速度 340m/s	34cm/ms
 {
+	Ultra_Trigger();
 	if(ultra->overflow == true)		
 	{
 		ultra->ultra_distance = 100.0;

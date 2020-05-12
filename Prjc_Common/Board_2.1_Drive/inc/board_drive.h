@@ -14,6 +14,7 @@
 
 #include "common.h"
 #include "systick.h"
+#include "delay.h"
 #include "motor.h"
 #include "pwm.h"
 #include "encoder.h"

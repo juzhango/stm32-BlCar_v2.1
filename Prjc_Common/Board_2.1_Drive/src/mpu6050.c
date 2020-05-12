@@ -32,18 +32,18 @@ int iic_readBuffer(uint8_t addr, uint8_t reg, uint8_t len, uint8_t *data)
 *@param  
 *@retval 		
 */
-#define DMP
-void MPU6050_Init()
+void MPU6050_Init(uint8_t mode)
 {
 	MPU_IIC_GPIO_Config();
 	
-#if defined DMP
-	DMP_Init();
-	
-#elif defined 
-	
-#elif defined
-	
-#endif
-
+	switch(mode)
+	{
+		case(1):
+			DMP_Init();
+			break;
+		case(2):
+			break;
+		default:
+			break;
+	}
 }

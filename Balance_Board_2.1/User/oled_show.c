@@ -29,8 +29,9 @@ void oled_show_init()
 	OLED_ShowStr(0,5,(unsigned char*)"enc_L:",1);
 	OLED_ShowStr(63,5,(unsigned char*)"enc_R:",1);
 	//=============第七行显示=======================//
-	OLED_ShowStr(0,6,(unsigned char*)"angle:",1);
+	OLED_ShowStr(0,6,(unsigned char*)"roll:",1);
 	//=============第八行显示=======================//	
+	OLED_ShowStr(0,7,(unsigned char*)"gyro_0:",1);
 }
 /**************************************************************************
 函数功能：OLED显示
@@ -39,13 +40,15 @@ void oled_show_init()
 **************************************************************************/
 void oled_show_reflesh(void)
 {
-	
-	//=============第一行显示=======================//	
 	char buf[8];
+	//=============第一行显示=======================//	
 	sprintf(buf,"%4.1f",f32Power);						//=== 长度4，保留小数点后1位
 	OLED_ShowStr(95,0,(unsigned char*)buf,1);
+	memset(buf,0,sizeof(buf));
 	//=============第二行显示=======================//
-	
+	sprintf(buf,"%5.1f",ultra.ultra_distance);
+	OLED_ShowStr(55,1,(unsigned char*)buf,1);
+	memset(buf,0,sizeof(buf));
 	//=============第一行显示=======================//		
 //	OLED_ShowStr(0,2,(unsigned char*)"EncoLEFT",1);
 //	if( Encoder_Left<0)		
@@ -63,18 +66,14 @@ void oled_show_reflesh(void)
 //		OLED_ShowStr(53,3,(unsigned char*)"+",1),
 //		OLED_ShowNum(60,3, Encoder_Right,1);
 	//=============第一行显示=======================//	
-	//=============第一行显示=======================//	
-//	OLED_ShowStr(0,5,(unsigned char*)"Angle",1);
-//	if(Angle_Balance<0)		
-//		OLED_ShowNum(42,5,Angle_Balance+360,1);
-//	else
-//		OLED_ShowNum(42,5,Angle_Balance,1);
-	//=============第一行显示=======================//	
-//	OLED_ShowStr(0,6,(unsigned char*)"Pitch",1);
-//	if(Angle_Balance<0)	
-//		OLED_ShowNum(42,6,Pitch,1);
-//	else	
-//		OLED_ShowNum(42,6,Pitch,1);
+	//=============第七行显示=======================//	
+	sprintf(buf,"%.3f   ",Roll);
+	OLED_ShowStr(31,6,(unsigned char*)buf,1);
+	memset(buf,0,sizeof(buf));
+	//=============第八行显示=======================//	
+	sprintf(buf,"%d   ",(int)gyro[0]);
+	OLED_ShowStr(43,7,(unsigned char*)buf,1);
+	memset(buf,0,sizeof(buf));
 	//=============刷新=======================//
 
 }

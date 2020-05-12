@@ -1,9 +1,0 @@
-
-
-OLED_SDA			PA0
-OLED_SCL			PA1
-
-
-MPU6050
-SDA					PB9
-SCL					PB8

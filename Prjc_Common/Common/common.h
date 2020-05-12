@@ -53,10 +53,7 @@ void INTX_DISABLE(void); //关闭所有中断
 void INTX_ENABLE(void);	 //开启所有中断
 void MSR_MSP(u32 addr);	 //设置堆栈地址 
 
-	
-void delay_init(void);
-void delay_ms(u16 nms);
-void delay_us(u32 nus);
+
 void get_ms(unsigned long *timestamp);
 #endif
 
