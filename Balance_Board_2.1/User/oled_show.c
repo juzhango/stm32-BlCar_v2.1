@@ -31,7 +31,7 @@ void oled_show_init()
 	//=============第七行显示=======================//
 	OLED_ShowStr(0,6,(unsigned char*)"roll:",1);
 	//=============第八行显示=======================//	
-	OLED_ShowStr(0,7,(unsigned char*)"gyro_0:",1);
+	OLED_ShowStr(0,7,(unsigned char*)"gyro:",1);
 }
 /**************************************************************************
 函数功能：OLED显示
@@ -41,7 +41,10 @@ void oled_show_init()
 void oled_show_reflesh(void)
 {
 	char buf[8];
-	//=============第一行显示=======================//	
+	//=============第一行显示=======================//
+					
+	OLED_ShowStr(31,0,(unsigned char*)"dmp",1);
+	
 	sprintf(buf,"%4.1f",f32Power);						//=== 长度4，保留小数点后1位
 	OLED_ShowStr(95,0,(unsigned char*)buf,1);
 	memset(buf,0,sizeof(buf));
@@ -65,14 +68,20 @@ void oled_show_reflesh(void)
 //	else                 	
 //		OLED_ShowStr(53,3,(unsigned char*)"+",1),
 //		OLED_ShowNum(60,3, Encoder_Right,1);
-	//=============第一行显示=======================//	
+	//=============第六行显示=======================//	
+	sprintf(buf,"%d ",encM1AB.Encoder);
+	OLED_ShowStr(37,5,(unsigned char*)buf,1);
+	memset(buf,0,sizeof(buf));
+	sprintf(buf,"%d ",encM2AB.Encoder);
+	OLED_ShowStr(99,5,(unsigned char*)buf,1);
+	memset(buf,0,sizeof(buf));
 	//=============第七行显示=======================//	
 	sprintf(buf,"%.3f   ",Roll);
 	OLED_ShowStr(31,6,(unsigned char*)buf,1);
 	memset(buf,0,sizeof(buf));
 	//=============第八行显示=======================//	
 	sprintf(buf,"%d   ",(int)gyro[0]);
-	OLED_ShowStr(43,7,(unsigned char*)buf,1);
+	OLED_ShowStr(31,7,(unsigned char*)buf,1);
 	memset(buf,0,sizeof(buf));
 	//=============刷新=======================//
 

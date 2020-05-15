@@ -126,6 +126,7 @@ void Set_Pwm(ST_PWM_REGS *pwm,uint16_t ccr)
 {
 	pwm->CCR_val = ccr;
 	
+	//=== оч╥Ы
 	if(pwm->CCR_val > pwm->Arr){
 		pwm->CCR_val = pwm->Arr;
 	}

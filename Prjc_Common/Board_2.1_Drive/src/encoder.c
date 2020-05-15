@@ -31,13 +31,13 @@ void Init_ENCODER_Pram(ST_ENCODER_REGS *m1, ST_ENCODER_REGS *m2)
 {
 	m1->Gclk = M1AB_GPIO_CLK;
 	m1->Gpio = M1AB_GPIO_PORT;
-	m1->Pin->encA_Pin = M1A_PIN;
-	m1->Pin->encB_Pin = M1B_PIN;
+	m1->Pin.encA_Pin = M1A_PIN;
+	m1->Pin.encB_Pin = M1B_PIN;
 	
 	m2->Gclk = M2AB_GPIO_CLK;
 	m2->Gpio = M2AB_GPIO_PORT;
-	m2->Pin->encA_Pin = M2A_PIN;
-	m2->Pin->encB_Pin = M2B_PIN;	
+	m2->Pin.encA_Pin = M2A_PIN;
+	m2->Pin.encB_Pin = M2B_PIN;	
 	
 	m1->Tclk = M1AB_TIM_CLK;
 	m1->Tim = M1AB_TIMx;
@@ -59,12 +59,12 @@ void ENCODER_GPIO_Config()
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	
-//	GPIO_InitStructure.GPIO_Pin = encM1AB.Pin->encA_Pin|encM1AB.Pin->encB_Pin;
-	GPIO_InitStructure.GPIO_Pin = M1A_PIN|M1B_PIN;
+	GPIO_InitStructure.GPIO_Pin = encM1AB.Pin.encA_Pin|encM1AB.Pin.encB_Pin;
+//	GPIO_InitStructure.GPIO_Pin = M1A_PIN|M1B_PIN;
 	GPIO_Init(encM1AB.Gpio,&GPIO_InitStructure);
 	
-//	GPIO_InitStructure.GPIO_Pin = encM2AB.Pin->encA_Pin|encM2AB.Pin->encB_Pin;
-	GPIO_InitStructure.GPIO_Pin = M2A_PIN|M2B_PIN;
+	GPIO_InitStructure.GPIO_Pin = encM2AB.Pin.encA_Pin|encM2AB.Pin.encB_Pin;
+//	GPIO_InitStructure.GPIO_Pin = M2A_PIN|M2B_PIN;
 	GPIO_Init(encM2AB.Gpio,&GPIO_InitStructure);	
 }
 

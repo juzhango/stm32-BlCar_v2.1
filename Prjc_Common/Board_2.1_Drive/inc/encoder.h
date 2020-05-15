@@ -13,7 +13,7 @@ typedef struct
 typedef struct 
 {
 	GPIO_TypeDef* 		Gpio;
-	ST_EncPin_REGS* 	Pin;
+	ST_EncPin_REGS	 	Pin;
 	uint32_t 			Gclk;	
 	
 	TIM_TypeDef* 		Tim;
