@@ -8,7 +8,7 @@
 #define PD_KD			1.2
 
 #define PI_KP			70
-#define PI_KI			PI_KP/200
+#define PI_KI			(PI_KP/200.0)
 
 #define MOTO_PWM_THRESHOLD			0			//=== 死区电压、增大PWM输出
 

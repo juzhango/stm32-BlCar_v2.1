@@ -14,11 +14,11 @@ void BlCar_Control_Init()
 	str_time_cnt.Time_5HZ = 0;
 	str_time_cnt.Time_10HZ = 0;
 	
-	strBlCar.PD_P = 0.6*PD_KP;				
+	strBlCar.PD_P = 0.6*PD_KP;			//=== PD直立环
 	strBlCar.PD_D = 0.6*PD_KD;				
 	strBlCar.PD_Out = 0;
 	
-	strBlCar.PI_P = PI_KP;
+	strBlCar.PI_P = PI_KP;					//=== PI速度环
 	strBlCar.PI_I = PI_KI;
 	strBlCar.PI_Out = 0;
 	
@@ -30,10 +30,8 @@ void BlCar_Control_Init()
 	strBlCar.Enable = true;
 }
 /**
-*@brief	This function must be 200HZ
-*@param  
-*@retval 		
-*/
+*@brief	This function must be 200HZ		
+**/
 void BlCar_Control(void)
 {
 	str_time_cnt.Time_1HZ++;
@@ -47,14 +45,12 @@ void BlCar_Control(void)
 	PI_Velocity(&strBlCar);						//=== PI速度环
 	Stop_Judge();								//=== 停车判断
 	Set_MOTO();									//=== 设置电机速度
-	
 	if(str_time_cnt.Time_10HZ >= 20){
 		str_time_cnt.Time_10HZ = 0;
 		Ultrasonic(); 							//=== 超声波
 	}
 	if(str_time_cnt.Time_5HZ >= 40){			//=== 5HZ定时器
 		str_time_cnt.Time_5HZ = 0;
-		
 	}	
 	if(str_time_cnt.Time_1HZ >= 200){			//=== 1HZ定时器
 		str_time_cnt.Time_1HZ = 0;
@@ -122,7 +118,7 @@ void Set_MOTO(void)
 	}
 	
 	Set_Pwm(&PWMA,abs(Moto1));
-	Set_Pwm(&PWMB,abs(Moto2));
+	Set_Pwm(&PWMB,abs(Moto2)+5);
 }
 
 void Value_Limit(float *value,int max,int min)
