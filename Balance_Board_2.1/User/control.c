@@ -12,13 +12,18 @@ void BlCar_Control_Init()
 	f32Power = 0.0;
 	str_time_cnt.Time_1HZ = 0;
 	str_time_cnt.Time_5HZ = 0;
+	str_time_cnt.Time_10HZ = 0;
 	
 	strBlCar.PD_P = PD_KP;
 	strBlCar.PD_D = PD_KD;
 	strBlCar.PD_Out = 0;
 	
+	strBlCar.PI_P = PI_KP;
+	strBlCar.PI_I = PI_KI;
 	strBlCar.PI_Out = 0;
 	
+	strBlCar.Car_Set_Spd = 0;
+	strBlCar.Car_Set_Pos = 0;
 }
 /**
 *@brief	This function must be 200HZ
@@ -29,20 +34,24 @@ void BlCar_Control(void)
 {
 	str_time_cnt.Time_1HZ++;
 	str_time_cnt.Time_5HZ++;
+	str_time_cnt.Time_10HZ++;
 
 	Get_Encoder(&encM1AB,&encM2AB);				//=== 获取编码器值
-	Read_DMP();									//=== 获取姿态
-	PID_Assignment(&strBlCar);
+	Get_IMU_Data();								//=== 获取姿态
+	PID_Assignment(&strBlCar);		
 	PD_Upright(&strBlCar);						//=== PD直立环
 	PI_Velocity(&strBlCar);						//=== PI速度环
 	Set_MOTO();									//=== 设置电机速度
 	
-	if(str_time_cnt.Time_5HZ >= 40){			//=== 5HZ定时
+	if(str_time_cnt.Time_10HZ >= 20){
+		str_time_cnt.Time_10HZ = 0;
+		Ultrasonic(); 							//=== 超声波
+	}
+	if(str_time_cnt.Time_5HZ >= 40){			//=== 5HZ定时器
 		str_time_cnt.Time_5HZ = 0;
 		oled_show_reflesh();					//=== oled数据刷新
 	}	
-	
-	if(str_time_cnt.Time_1HZ >= 200){			//=== 1HZ定时
+	if(str_time_cnt.Time_1HZ >= 200){			//=== 1HZ定时器
 		str_time_cnt.Time_1HZ = 0;
 		f32Power = Get_Bettrty(10);				//=== 获取电量
 	}
@@ -54,8 +63,8 @@ void PID_Assignment(STR_PD_PI_REG *p)
 	p->angle = Roll;
 	p->gyro = gyro[0];
 	
-	p->m1encFdb = encM1AB.Encoder;
-	p->m2encFdb = encM2AB.Encoder;
+	p->m1EncFdb = encM1AB.Encoder;
+	p->m2EncFdb = encM2AB.Encoder;
 }
 
 int PD_Upright(STR_PD_PI_REG *p)
@@ -71,13 +80,15 @@ int PI_Velocity(STR_PD_PI_REG *p)
 {
 	static float Encoder_Integral = 0;
 	
-	p->EncodeLeast = p->m1encFdb + p->m2encFdb;
-	p->Encode *= 0.7;
+	p->EncodeLeast = p->m1EncFdb + p->m2EncFdb;
+	p->Encode *= 0.7;												//=== old权重0.7  new权重0.3
 	p->Encode += p->Encode + 0.3*p->EncodeLeast;
 	Encoder_Integral += p->Encode;
+	Encoder_Integral += p->UltrasonicSpd;							//=== 融合超声波给定速度
 	Value_Limit(&Encoder_Integral,15000,-15000);
 	
-	p->PI_Out = p->PI_P*p->Encode + p->PI_I*Encoder_Integral;
+	p->PI_Out = p->PI_P*(p->Encode - p->Car_Set_Spd) + p->PI_I*(Encoder_Integral - p->Car_Set_Pos);
+	
 	return p->PI_Out;
 }
 
@@ -113,3 +124,22 @@ void Value_Limit(float *value,int max,int min)
 	}
 }
 
+
+void Get_IMU_Data(void)
+{
+	switch(IMU_MODE){
+		case DMP_MODE:
+			Read_DMP();
+			break;
+		default:
+			break;		
+	}
+}
+void Ultrasonic(void)
+{
+	if(ultra.ultra_distance > 10)
+		strBlCar.UltrasonicSpd = 0;
+	
+	if(ultra.ultra_distance <10)
+		strBlCar.UltrasonicSpd = 0;
+}

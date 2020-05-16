@@ -32,16 +32,14 @@ int iic_readBuffer(uint8_t addr, uint8_t reg, uint8_t len, uint8_t *data)
 *@param  
 *@retval 		
 */
-void MPU6050_Init(uint8_t mode)
+void MPU6050_Init()
 {
 	MPU_IIC_GPIO_Config();
 	
-	switch(mode)
+	switch(IMU_MODE)
 	{
-		case(1):
+		case DMP_MODE:
 			DMP_Init();
-			break;
-		case(2):
 			break;
 		default:
 			break;

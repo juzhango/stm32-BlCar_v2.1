@@ -4,20 +4,19 @@
 
 #define ANGLE_ORIGIN	8.6F
 
-#define PD_KP			1
-#define PD_KD			1
+#define PD_KP			0
+#define PD_KD			0
 
-#define PI_KP			1
-#define PI_KI			1
+#define PI_KP			0
+#define PI_KI			PI_KP/200
 
 
 typedef struct
 {
 	uint8_t Time_1HZ;
 	uint8_t Time_5HZ;
+	uint8_t Time_10HZ;
 }STR_TIME_REG;
-
-
 
 typedef struct
 {
@@ -27,21 +26,23 @@ typedef struct
 	int PD_Out;
 	float PD_P;
 	float PD_D;
-	float angErr;
-	
+	float angErr;			//=== 倾角误差
+	float angRef;			//=== 角度期望值	
 
-//	int m1encRef;
-//	int m2encRef;
-//	
-	int m1encFdb;
-	int m2encFdb;
+	int m1EncFdb;			//=== 电机编码器反馈
+	int m2EncFdb;
 	
 	
 	float PI_P;
 	float PI_I;
 	int PI_Out;
-	float Encode;
-	float EncodeLeast;
+	float Encode;			//=== 速度融合
+	float EncodeLeast;		//=== 速度融合
+	float UltrasonicSpd;	//=== 超声波融合
+	float BluetoothSpd;		//=== 蓝牙融合
+	
+	int Car_Set_Spd;
+	int Car_Set_Pos;
 }STR_PD_PI_REG;
 
 
@@ -58,7 +59,13 @@ void PID_Assignment(STR_PD_PI_REG *p);
 int PD_Upright(STR_PD_PI_REG *p);
 int PI_Velocity(STR_PD_PI_REG *p);
 void Set_MOTO(void);
-
+void Get_IMU_Data(void);
+/**
+*@brief	超声波的数据处理，用于PI速度控制融合
+*@param  
+*@retval 		
+*/
+void Ultrasonic(void);
 
 /**
 *@brief	
