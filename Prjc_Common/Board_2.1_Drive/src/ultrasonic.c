@@ -128,7 +128,7 @@ void TIM1_UP_IRQHandler(void)   //TIMÖÐ¶Ï
 void Ultra_Trigger(void)
 {
 	GPIO_SetBits(TRIG_GPIO_PORT,TRIG_PIN); 		  
-	delay_us(2);		                   
+	delay_us(5);		                   
 	GPIO_ResetBits(TRIG_GPIO_PORT,TRIG_PIN);	  
 }
 

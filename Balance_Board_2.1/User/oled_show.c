@@ -17,8 +17,8 @@ void oled_show_init()
 	//=============第二行显示=======================//	
 	OLED_ShowStr(0,1,(unsigned char*)"Obstacle:",1);
 	//=============第三行显示=======================//	
-	OLED_ShowStr(0,2,(unsigned char*)"ang_P:",1);
-	OLED_ShowStr(63,2,(unsigned char*)"ang_D:",1);
+	OLED_ShowStr(0,2,(unsigned char*)"an_P:",1);
+	OLED_ShowStr(63,2,(unsigned char*)"an_D:",1);
 	
 	//=============第四行显示=======================//	
 	OLED_ShowStr(0,3,(unsigned char*)"spd_P:",1);
@@ -49,29 +49,30 @@ void oled_show_reflesh(void)
 	OLED_ShowStr(95,0,(unsigned char*)buf,1);
 	memset(buf,0,sizeof(buf));
 	//=============第二行显示=======================//
-	sprintf(buf,"%5.1f",ultra.ultra_distance);
+	sprintf(buf,"%.1f   ",ultra.ultra_distance);
 	OLED_ShowStr(55,1,(unsigned char*)buf,1);
 	memset(buf,0,sizeof(buf));
-	//=============第一行显示=======================//		
-//	OLED_ShowStr(0,2,(unsigned char*)"EncoLEFT",1);
-//	if( Encoder_Left<0)		
-//		OLED_ShowStr(53,2,(unsigned char*)"-",1),
-//		OLED_ShowNum(60,2,-Encoder_Left,1);
-//	else                 	
-//		OLED_ShowStr(53,2,(unsigned char*)"+",1),
-//		OLED_ShowNum(60,2, Encoder_Left,1);
-	//=============第一行显示=======================//			
-//	OLED_ShowStr(0,3,(unsigned char*)"EncoLEFT",1);
-//	if( Encoder_Right<0)
-//		OLED_ShowStr(53,3,(unsigned char*)"-",1),
-//		OLED_ShowNum(60,3,-Encoder_Right,1);
-//	else                 	
-//		OLED_ShowStr(53,3,(unsigned char*)"+",1),
-//		OLED_ShowNum(60,3, Encoder_Right,1);
+	//=============第三行显示=======================//		
+	sprintf(buf,"%d ",(int)strBlCar.PD_P);
+	OLED_ShowStr(31,2,(unsigned char*)buf,1);
+	memset(buf,0,sizeof(buf));
+	
+	sprintf(buf,"%4.2f ",strBlCar.PD_D);
+	OLED_ShowStr(94,2,(unsigned char*)buf,1);
+	memset(buf,0,sizeof(buf));
+	//=============第四行显示=======================//			
+	sprintf(buf,"%d ",(int)strBlCar.PI_P);
+	OLED_ShowStr(37,3,(unsigned char*)buf,1);
+	memset(buf,0,sizeof(buf));
+	
+	sprintf(buf,"%4.2f ",strBlCar.PI_I);
+	OLED_ShowStr(100,3,(unsigned char*)buf,1);
+	memset(buf,0,sizeof(buf));
 	//=============第六行显示=======================//	
 	sprintf(buf,"%d ",encM1AB.Encoder);
 	OLED_ShowStr(37,5,(unsigned char*)buf,1);
 	memset(buf,0,sizeof(buf));
+	
 	sprintf(buf,"%d ",encM2AB.Encoder);
 	OLED_ShowStr(99,5,(unsigned char*)buf,1);
 	memset(buf,0,sizeof(buf));

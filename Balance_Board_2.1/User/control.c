@@ -14,8 +14,8 @@ void BlCar_Control_Init()
 	str_time_cnt.Time_5HZ = 0;
 	str_time_cnt.Time_10HZ = 0;
 	
-	strBlCar.PD_P = PD_KP;
-	strBlCar.PD_D = PD_KD;
+	strBlCar.PD_P = 0.6*PD_KP;				
+	strBlCar.PD_D = 0.6*PD_KD;				
 	strBlCar.PD_Out = 0;
 	
 	strBlCar.PI_P = PI_KP;
@@ -24,6 +24,10 @@ void BlCar_Control_Init()
 	
 	strBlCar.Car_Set_Spd = 0;
 	strBlCar.Car_Set_Pos = 0;
+	
+	strBlCar.EncodeLeast = 0;
+	
+	strBlCar.Enable = true;
 }
 /**
 *@brief	This function must be 200HZ
@@ -41,6 +45,7 @@ void BlCar_Control(void)
 	PID_Assignment(&strBlCar);		
 	PD_Upright(&strBlCar);						//=== PD直立环
 	PI_Velocity(&strBlCar);						//=== PI速度环
+	Stop_Judge();								//=== 停车判断
 	Set_MOTO();									//=== 设置电机速度
 	
 	if(str_time_cnt.Time_10HZ >= 20){
@@ -49,7 +54,7 @@ void BlCar_Control(void)
 	}
 	if(str_time_cnt.Time_5HZ >= 40){			//=== 5HZ定时器
 		str_time_cnt.Time_5HZ = 0;
-		oled_show_reflesh();					//=== oled数据刷新
+		
 	}	
 	if(str_time_cnt.Time_1HZ >= 200){			//=== 1HZ定时器
 		str_time_cnt.Time_1HZ = 0;
@@ -71,43 +76,49 @@ int PD_Upright(STR_PD_PI_REG *p)
 {
 	p->angErr = p->angle - ANGLE_ORIGIN;
 	
-	//=== out = p*angle + d*accel
+	/* out = p*angle + d*accel */
 	p->PD_Out = p->PD_P*p->angErr + p->PD_D*p->gyro;     
 	
 	return p->PD_Out;
 }
 int PI_Velocity(STR_PD_PI_REG *p)
 {
-	static float Encoder_Integral = 0;
+	static float Encoder,Encoder_Integral;
 	
-	p->EncodeLeast = p->m1EncFdb + p->m2EncFdb;
-	p->Encode *= 0.7;												//=== old权重0.7  new权重0.3
-	p->Encode += p->Encode + 0.3*p->EncodeLeast;
-	Encoder_Integral += p->Encode;
+	p->EncodeLeast = (p->m1EncFdb + p->m2EncFdb);
+	Encoder *= 0.7;													//=== 一阶低通滤波
+	Encoder += p->EncodeLeast*0.3;
+	Encoder_Integral += Encoder;
 	Encoder_Integral += p->UltrasonicSpd;							//=== 融合超声波给定速度
 	Value_Limit(&Encoder_Integral,15000,-15000);
 	
-	p->PI_Out = p->PI_P*(p->Encode - p->Car_Set_Spd) + p->PI_I*(Encoder_Integral - p->Car_Set_Pos);
+	p->PI_Out = p->PI_P*(Encoder - p->Car_Set_Spd) + p->PI_I*(Encoder_Integral - p->Car_Set_Pos);
 	
 	return p->PI_Out;
 }
 
 void Set_MOTO(void)
 {
-	Moto1 = strBlCar.PD_Out + strBlCar.PI_Out;
-	Moto2 = strBlCar.PD_Out + strBlCar.PI_Out;
-	
-	if(Moto1 > 0){
-		LEFT_Run();
+	if(strBlCar.Enable){
+			
+		Moto1 = strBlCar.PD_Out + strBlCar.PI_Out;
+		Moto2 = strBlCar.PD_Out + strBlCar.PI_Out;
+		
+		if(Moto1 > 0){
+			LEFT_Run();
+		}
+		else{
+			LEFT_Back();
+		}
+		if(Moto2 > 0){
+			RIGHT_Run();
+		}	
+		else{
+			RIGHT_Back();
+		}
 	}
 	else{
-		LEFT_Back();
-	}
-	if(Moto2 > 0){
-		RIGHT_Run();
-	}	
-	else{
-		RIGHT_Back();
+		Moto1=Moto2=0;
 	}
 	
 	Set_Pwm(&PWMA,abs(Moto1));
@@ -137,9 +148,21 @@ void Get_IMU_Data(void)
 }
 void Ultrasonic(void)
 {
-	if(ultra.ultra_distance > 10)
+	if(ultra.ultra_distance >= 10 && ultra.ultra_distance <30){
+		strBlCar.UltrasonicSpd = -5;
+	}
+	else if(ultra.ultra_distance > 0 && ultra.ultra_distance <10){
+		strBlCar.UltrasonicSpd = 8;
+	}
+	else {
 		strBlCar.UltrasonicSpd = 0;
-	
-	if(ultra.ultra_distance <10)
-		strBlCar.UltrasonicSpd = 0;
+	}
 }
+void Stop_Judge()
+{
+	if(fabs(strBlCar.angErr)>45)
+		strBlCar.Enable = false;
+	else
+		strBlCar.Enable = true;
+}
+

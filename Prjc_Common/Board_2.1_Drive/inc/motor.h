@@ -25,6 +25,7 @@ typedef struct
 	uint32_t Clk;
 }ST_MOTOR_REGS;
 
+
 extern ST_MOTOR_REGS AIN1,AIN2,BIN1,BIN2;
 
 /* 定义驱动引脚 -----------------------------*/
